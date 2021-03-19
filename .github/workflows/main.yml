@@ -30,6 +30,11 @@ jobs:
       - name: scanner_key
         env: # Or as an environment variable
           SCANNER_KEY: ${{ secrets.SCANNER_KEY }}
+      
+      - run: 'echo "var config { TEST_KEY : $TEST_KEY }" > config.js'
+      shell: bash
+      env:
+        TEST_KEY: ${{secrets.TEST_KEY}}
      
      # Runs a set of commands using the runners shell
       - name: Run a multi-line script
