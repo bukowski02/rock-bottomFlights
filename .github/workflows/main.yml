@@ -25,4 +25,4 @@ jobs:
       env:
         TEST_KEY: ${{ secrets.TEST_KEY }}
       run: |
-        echo "var config = { TEST_KEY : 24 }" > config.js
+        echo "var config = "\{" TEST_KEY : 24 "\} > config.js
