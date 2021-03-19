@@ -25,4 +25,4 @@ jobs:
       env:
         TEST_KEY: ${{ secrets.TEST_KEY }}
       run: |
-        echo "$TEST_KEY" > config.js
+        echo "aaaaa" > aaa
