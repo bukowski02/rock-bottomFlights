@@ -1,0 +1,7 @@
+div {
+    border: 0px solid red; 
+}
+
+#title, #subtitle {
+    text-align: center;
+}
