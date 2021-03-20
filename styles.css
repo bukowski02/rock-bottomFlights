@@ -1,7 +1,11 @@
-div {
-    border: 0px solid red; 
-}
-
 #title, #subtitle {
     text-align: center;
+}
+
+#formDiv {
+    margin-top: 3em;
+}
+
+#headerDiv {
+    margin-top: 3em;
 }

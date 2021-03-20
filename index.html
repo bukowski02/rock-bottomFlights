@@ -8,13 +8,11 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
         <link rel="stylesheet" href="styles.css">
 
-        <!-- add an icon for the site and maybe a logo down there -->
-        
-        <!-- top script -->
+        <!-- add an icon for the site maybe -->
+        <link rel="icon" type="image/x-icon" href="icon.ico">
 
-        <script>
-            //nothing here atm
-        </script>
+        <!-- import valid form options -->
+        <script src="data.js"></script>
 
         <title>Rock-bottom Flights</title>
     </head>
@@ -22,7 +20,7 @@
         <div class="container-fluid">
 
             <!-- header -->
-            <div class="row">
+            <div class="row" id="headerDiv">
                 <div class="col-3 .d-none .d-md-block"></div>
                 <div class="col-md-6 container-fluid">
                     <div class="row">
@@ -56,11 +54,23 @@
             </div>
 
             <!-- form -->
-            <div class="row">
+            <div class="row" id="formDiv">
                 <div class="col-2 .d-none .d-md-block"></div>
                 <div class="col-md-8">
                     <form>
-                        <button class="btn btn-primary" onclick="search()"></submit>
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" id="origin" placeholder="Origin Airport" aria-label="Origin" aria-describedby="submit">
+                            <input type="text" class="form-control" id="destination" placeholder="Destination Airport" aria-label="Destination" aria-describedby="submit">
+                        </div>
+                        <div class="input-group mb-3">
+                            <input type="date" class="form-control" id="departureDate" name="departureDate" placeholder="Departure Date (YYYY-MM-DD)" aria-label="Departure Date" aria-describedby="submit">
+                            <input type="date" class="form-control" id="returnDate" name="returnDate" placeholder="Return Date (optional)" aria-label="Return Date" aria-describedby="submit">
+                            <input type="text" list="currencies" class="form-control" id="currency" name="currency" placeholder="Currency (start typing)" aria-label="Currency" aria-describedby="submit">
+                            <button id="submit" class="btn btn-outline-primary" type="button">Search</button>
+                        </div>
+
+
+                        <datalist id="currencies"></datalist>
                     </form>
                 </div>
                 <div class="col-2 .d-none .d-md-block"></div>
@@ -100,40 +110,80 @@
                 <div class="col-2 .d-none .d-md-block"></div>
             </div>
 
-            <div class="row" id="api-dump"></div>
+            <div class="row" id="api-dump"></div><br>
+            <div class="row" id="hahaha"></div>
         </div>
 
         <!-- bottom script -->
-        <script type='text/javascript' src='config.js'></script>
         <script>
+            const api_key = "dfdad83bd9msh0be17af8e1d9199p128df6jsn12ce43dd715a";
 
-            /*//api
-            fetch("https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/reference/v1.0/currencies", {
-                "method": "GET",
-                "headers": {
-                    "x-rapidapi-key": env.SCANNER_KEY,
-                    "x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com"
+            /* handles request */
+            function api(query){
+                return fetch(query, {
+                    "method": "GET",
+                    "headers": {
+                        "x-rapidapi-key": api_key,
+                        "x-rapidapi-host": "skyscanner-skyscanner-flight-search-v1.p.rapidapi.com"
+                    }
+                })
+                .then(response => {
+                    //console.log(response.json());
+                    return response.json();
+                })
+                .catch(err => {
+                    console.error(err);
+                });
+            }
+
+            /* form event listener */
+            document.getElementById("submit").addEventListener("click", async function(e){
+                e.preventDefault(); //stops button from redirecting
+
+                //assemble api query
+                var query = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0/US/"; //generate the necessary query from the form inputs, we can assume locale and country to be en-US and US I think
+                query = query.concat(document.getElementById("currency").value, "/en-US/", document.getElementById("origin").value, "/", document.getElementById("destination").value, "/", document.getElementById("departureDate").value);
+                if (document.getElementById("returnDate").value){
+                    query = query.concat("?inboundpartialdate=", document.getElementById("returnDate").value);
                 }
-            })
-            .then(response => {
-                console.log(response.json());
-            })
-            .catch(err => {
-                console.error(err);
+                //alert(query);
+                var data = await api(query);
+
+
+                //deal with output here, loop stuff into a table, 
+                //add visual cues, and can be sorted by price up or down
+                var bottomText = 0;
+                for (x in data["Quotes"]){
+                    bottomText += 1
+                  //data["Quotes"][x]["MinPrice"];
+                }
+                //bottomText += data["Quotes"][0]["MinPrice"];
+                //bottomText += data["Quotes"][1]["MinPrice"];
+
+
+
+                //{"Quotes":[{"QuoteId":1,"MinPrice":100,"Direct":false,"OutboundLeg":{"CarrierIds":[1793],"OriginId":58436,"DestinationId":73076,"DepartureDate":"2021-04-04T00:00:00"},"QuoteDateTime":"2021-03-19T23:32:00"},{"QuoteId":2,"MinPrice":147,"Direct":true,"OutboundLeg":{"CarrierIds":[1793],"OriginId":58436,"DestinationId":73076,"DepartureDate":"2021-04-04T00:00:00"},"QuoteDateTime":"2021-03-19T23:32:00"}],"Carriers":[{"CarrierId":1793,"Name":"United"}],"Places":[{"Name":"Washington Dulles","Type":"Station","PlaceId":58436,"IataCode":"IAD","SkyscannerCode":"IAD","CityName":"Washington","CityId":"WASA","CountryName":"United States"},{"Name":"Chicago O'Hare International","Type":"Station","PlaceId":73076,"IataCode":"ORD","SkyscannerCode":"ORD","CityName":"Chicago","CityId":"CHIA","CountryName":"United States"}],"Currencies":[{"Code":"USD","Symbol":"$","ThousandsSeparator":",","DecimalSeparator":".","SymbolOnLeft":true,"SpaceBetweenAmountAndSymbol":false,"RoundingCoefficient":0,"DecimalDigits":2}]}
+                //Quotes: [{quote1},{quote2},{quote3}]
+                //Places: [{place1},{place2}]
+                //Carriers: [{carrier1}]
+                //Currencies: [{currency}]
+
+                document.getElementById("hahaha").innerHTML = bottomText;
+
+                document.getElementById("api-dump").innerHTML = JSON.stringify(data);
             });
 
-            function search()
-            {
-                alert('u hit the button yay');
 
-                return;
 
-            }*/
-            var TEST_KEY = config.TEST_KEY;
-            alert(TEST_KEY);
+
+            /* populate the form with valid options */
+            //currencies
+            var txt = ""
+            for (x in currencyList["Currencies"]){
+            txt += "<option value=\"" + currencyList["Currencies"][x]["Code"] + "\">";
+            }
+            document.getElementById("currencies").innerHTML = txt;
         </script>
-
-
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
     </body>
 </html>

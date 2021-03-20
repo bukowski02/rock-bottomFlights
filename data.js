@@ -1,4 +1,4 @@
-{
+const currencyList = {
   "Currencies" : [ {
     "Code" : "AED",
     "Symbol" : "AED",
@@ -1368,4 +1368,4 @@
     "RoundingCoefficient" : 0,
     "DecimalDigits" : 2
   } ]
-}
+};
