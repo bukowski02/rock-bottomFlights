@@ -152,9 +152,9 @@
 
                 //deal with output here, loop stuff into a table, 
                 //add visual cues, and can be sorted by price up or down
-                var bottomText = 0;
+                var bottomText = "";
                 for (x in data["Quotes"]){
-                    bottomText += 1
+                    bottomText += data["Quotes"][x]["MinPrice"];
                   //data["Quotes"][x]["MinPrice"];
                 }
                 //bottomText += data["Quotes"][0]["MinPrice"];
